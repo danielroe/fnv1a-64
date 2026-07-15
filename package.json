@@ -39,7 +39,7 @@
   "scripts": {
     "build": "tsdown",
     "dev": "vitest dev",
-    "lint": "eslint . --fix",
+    "lint": "oxlint --type-aware",
     "prepare": "simple-git-hooks",
     "prepack": "pnpm build",
     "test": "pnpm test:unit && pnpm test:types",
@@ -51,10 +51,9 @@
     "test:types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "9.1.0",
     "@sindresorhus/fnv1a": "^3.1.0",
+    "@types/node": "26.1.1",
     "@vitest/coverage-v8": "4.1.10",
-    "eslint": "10.7.0",
     "fnv-lite": "^1.2.0",
     "fnv-plus": "^1.3.1",
     "installed-check": "10.0.1",
@@ -62,9 +61,11 @@
     "mitata": "^1.0.34",
     "murmurhash": "^2.0.1",
     "nano-staged": "1.0.2",
+    "oxlint": "1.74.0",
+    "oxlint-tsgolint": "0.24.0",
     "simple-git-hooks": "2.13.1",
     "tsdown": "0.22.7",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "vitest": "4.1.10",
     "xxhashjs": "^0.2.2"
   },
@@ -73,7 +74,7 @@
   },
   "nano-staged": {
     "*.{js,ts,mjs,cjs,json,.*rc}": [
-      "npx eslint --fix"
+      "npx oxlint --type-aware --fix"
     ]
   }
 }

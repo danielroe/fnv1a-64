@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import process from 'node:process'
 import sindresorhusFnv1a from '@sindresorhus/fnv1a'
 import fnvLite from 'fnv-lite'

@@ -10,7 +10,7 @@ const short = 'user:12345:profile'
 const long = 'a'.repeat(1024)
 
 for (const [label, input] of [['short key', short], ['1KB string', long]]) {
-  group(label, () => {
+  void group(label, () => {
     bench('fnv1a-64 (lanes)', () => fnv1a64(input))
     bench('fnv1a-64 (hex)', () => fnv1a64Hex(input))
     bench('fnv1a-64 (base36)', () => fnv1a64Base36(input))
@@ -22,4 +22,4 @@ for (const [label, input] of [['short key', short], ['1KB string', long]]) {
   })
 }
 
-run()
+await run()
