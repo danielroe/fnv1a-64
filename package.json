@@ -1,7 +1,7 @@
 {
   "name": "fnv1a-64",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "packageManager": "pnpm@11.13.0",
   "description": "Tiny, fast, dependency-free 64-bit FNV-1a string hash for Node and the browser",
   "license": "MIT",
