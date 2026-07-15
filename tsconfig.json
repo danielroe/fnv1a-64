@@ -18,9 +18,7 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
-  "include": [
-    "src",
-    "test",
-    "playground"
+  "exclude": [
+    "dist"
   ]
 }

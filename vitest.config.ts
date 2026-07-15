@@ -4,7 +4,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
     alias: {
-      'package-name': fileURLToPath(
+      'fnv1a-64': fileURLToPath(
         new URL('./src/index.ts', import.meta.url).href,
       ),
     },

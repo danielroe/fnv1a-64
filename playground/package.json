@@ -5,6 +5,6 @@
     "dev": "node index.js"
   },
   "dependencies": {
-    "package-name": "latest"
+    "fnv1a-64": "latest"
   }
 }
