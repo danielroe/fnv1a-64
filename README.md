@@ -9,9 +9,13 @@
 
 The core computes a true 64-bit hash in two 32-bit lanes with plain JS numbers. It's ~320B gzipped (minified) and hashes a short key in ~36ns.
 
+> [!IMPORTANT]
+>
+> FNV-1a is a fast, **non-cryptographic** hash. It's useful for hash tables, cache keys, checksums, and bucketing, but do not use it for anything security-sensitive: it is not collision-resistant against an adversary and offers no preimage resistance.
+
 ## Why
 
-I created this for [Nuxt](https://github.com/nuxt/nuxt) due to the following issues with other FNV packages. These are all good packages and you should consider them if you don't have the same constraints I did:
+I created this for [Nuxt](https://github.com/nuxt/nuxt) due to particular constraints (fast, small, browser-use, no collisions), but you should consider using one of these other packages if you don't have the same constraints I did:
 
 | Package | Width | Gzip | Notes |
 | --- | --- | --- | --- |
@@ -42,7 +46,7 @@ fnv1a64('hello world') // => { high: 2006607335, low: 37540583 }  (fast core, no
 
 All outputs are deterministic: the same input always produces the same result. Hex is always exactly 16 characters; base36 length varies with the value but is stable per value.
 
-## Non-ASCII: UTF-16 code units, not UTF-8 bytes
+## Non-ASCII usage
 
 The hash iterates `str.charCodeAt(i)`, so it hashes UTF-16 code units rather than UTF-8 bytes. For **ASCII input this is bit-for-bit identical to a canonical FNV-1a-64**. For non-ASCII (accents, CJK, emoji) the output is stable and collision-resistant but will **not** match an FNV-1a-64 computed over the UTF-8 encoding of the same string.
 
@@ -52,10 +56,6 @@ If you need to interoperate with a hash produced elsewhere over UTF-8 bytes, enc
 const bytes = new TextEncoder().encode(str)
 // then hash the bytes with a UTF-8-aware FNV-1a-64 implementation
 ```
-
-> [!IMPORTANT]
-
-> FNV-1a is a fast, **non-cryptographic** hash. It's useful for hash tables, cache keys, checksums, and bucketing, but do not use it for anything security-sensitive: it is not collision-resistant against an adversary and offers no preimage resistance.
 
 ## Benchmark
 
@@ -72,7 +72,10 @@ Run `pnpm bench` (uses [mitata](https://github.com/evanwashere/mitata)). Indicat
 | `fnv-lite` `hex` | 128 | ~5.6 µs | ~297 µs |
 | `xxhashjs` `h64` | 64 | ~34 µs | ~59 µs |
 
-The `fnv1a64` core wins short keys outright. `fnv-plus` is competitive (and faster on long strings) but ships ~9 KB gzipped for a whole multi-width toolkit rather than one function. `murmurhash` is faster than 64-bit alternatives but is 32-bit, so it collides. `fnv-lite` and `xxhashjs` pay a large constant cost for their byte-array / `cuint` internals.
+The `fnv1a64` core wins short keys outright (our main use in Nuxt).
+`fnv-plus` is competitive (and faster on long strings) but ships ~9 KB gzipped for a whole multi-width toolkit rather than one function. This is less relevant if you're bundling or sharing the dependency.
+`murmurhash` is faster than 64-bit alternatives but is 32-bit, so it collides.
+`fnv-lite` and `xxhashjs` pay a large constant cost for their byte-array / `cuint` internals.
 
 ## 💻 Development
 
