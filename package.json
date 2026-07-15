@@ -34,8 +34,6 @@
     "lint": "eslint . --fix",
     "prepare": "simple-git-hooks",
     "prepack": "pnpm build",
-    "prepublishOnly": "pnpm lint && pnpm test",
-    "release": "bumpp && pnpm publish",
     "test": "pnpm test:unit && pnpm test:types",
     "test:unit": "vitest",
     "test:knip": "knip",
@@ -45,8 +43,6 @@
   "devDependencies": {
     "@antfu/eslint-config": "latest",
     "@vitest/coverage-v8": "latest",
-    "bumpp": "latest",
-    "changelogithub": "latest",
     "eslint": "latest",
     "installed-check": "latest",
     "knip": "latest",
