@@ -24,19 +24,44 @@ export interface Fnv1a64Lanes {
  * @returns The `{ high, low }` 32-bit lanes of the 64-bit hash.
  */
 export function fnv1a64(str: string): Fnv1a64Lanes {
-  let low = 0x84222325
-  let high = 0xCBF29CE4
-  for (let i = 0; i < str.length; i++) {
-    low ^= str.charCodeAt(i)
-    const lowByLow = (low & 0xFFFF) * 0x1B3
-    const highOfLow = (low >>> 16) * 0x1B3
-    const highByHigh = (high & 0xFFFF) * 0x1B3 + ((high >>> 16) * 0x1B3 << 16)
-    const carry = (lowByLow >>> 16) + highOfLow
-    // The 64-bit prime 0x100000001B3's 2^40 bit folds `low * 2^8` into the high lane.
-    high = (highByHigh + (carry >>> 16) + low * 0x100) >>> 0
-    low = ((lowByLow & 0xFFFF) | ((carry & 0xFFFF) << 16)) >>> 0
+  const len = str.length
+  // Four 16-bit lanes, least-significant first: v0 is bits 0-15, v3 bits 48-63.
+  // Splitting this fine keeps every intermediate a small integer -- the widest
+  // is `65535 * 0x1B3 + 65535 << 8`, still under 2^31 -- so the whole loop stays
+  // in V8's tagged-int fast path with no doubles and no `>>> 0` normalisation.
+  // The lanes are only recombined into `high`/`low` on the way out.
+  let i = 0
+  let t0 = 0
+  let v0 = 0x2325
+  let t1 = 0
+  let v1 = 0x8422
+  let t2 = 0
+  let v2 = 0x9CE4
+  let t3 = 0
+  let v3 = 0xCBF2
+
+  while (i < len) {
+    v0 ^= str.charCodeAt(i++)
+    // Multiply each lane by the prime's low half, 0x1B3.
+    t0 = v0 * 0x1B3
+    t1 = v1 * 0x1B3
+    t2 = v2 * 0x1B3
+    t3 = v3 * 0x1B3
+    // The prime is 0x1B3 + 2^40, and 2^40 is 2.5 lanes, so the 2^40 term shifts
+    // v0 into v2 and v1 into v3, each by the remaining 8 bits.
+    t2 += v0 << 8
+    t3 += v1 << 8
+    // Propagate the carries upward, truncating each lane back to 16 bits.
+    t1 += t0 >>> 16
+    v0 = t0 & 65535
+    t2 += t1 >>> 16
+    v1 = t1 & 65535
+    v3 = (t3 + (t2 >>> 16)) & 65535
+    v2 = t2 & 65535
   }
-  return { high: high >>> 0, low: low >>> 0 }
+
+  // combine into high and low to keep the API shape
+  return { high: ((v3 << 16) | v2) >>> 0, low: ((v1 << 16) | v0) >>> 0 }
 }
 
 /**

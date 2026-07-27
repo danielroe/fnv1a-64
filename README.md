@@ -64,21 +64,22 @@ Run `pnpm bench` (uses [mitata](https://github.com/evanwashere/mitata)). Indicat
 
 | | width | short key | 1 KB string |
 | --- | --- | --- | --- |
-| `fnv1a-64` | 64 | ~36 ns | ~2.6 µs |
-| `fnv1a-64` (hex) | 64 | ~55 ns | ~2.7 µs |
-| `fnv1a-64` (base 36) | 64 | ~97 ns | ~2.7 µs |
-| `fnv1a52` | 52 | **~25 ns** | ~1.9 µs |
+| `fnv1a-64` | 64 | **~25 ns** | ~2.0 µs |
+| `fnv1a-64` (hex) | 64 | ~49 ns | ~1.7 µs |
+| `fnv1a-64` (base 36) | 64 | ~87 ns | ~1.8 µs |
+| `fnv1a52` | 52 | **~24 ns** | ~1.9 µs |
 | `fnv1a52` (hex) | 52 | ~43 ns | ~2.0 µs |
-| `fnv1a52` (base 36) | 52 | ~68 ns | ~2.1 µs |
+| `fnv1a52` (base 36) | 52 | ~64 ns | ~1.7 µs |
 | `fnv-plus` `fast1a64` | 64 | ~62 ns | ~1.7 µs |
-| `murmurhash` v3 | 32 | ~236 ns | **~1.5 µs** |
-| `@sindresorhus/fnv1a` | 64 | ~696 ns | ~28 µs |
-| `fnv-lite` `hex` | 128 | ~5.1 µs | ~287 µs |
-| `xxhashjs` `h64` | 64 | ~30 µs | ~59 µs |
+| `murmurhash` v3 | 32 | ~332 ns | **~1.5 µs** |
+| `@sindresorhus/fnv1a` | 64 | ~699 ns | ~28 µs |
+| `fnv-lite` `hex` | 128 | ~5.4 µs | ~296 µs |
+| `xxhashjs` `h64` | 64 | ~31 µs | ~57 µs |
 
-The `fnv1a-64` core is the fastest 64-bit option on short keys (our main use in Nuxt), and hex formatting costs ~20 ns on top of it.
-`fnv1a52` is faster still and needs no `BigInt` or lane pair, at the cost of 12 bits of hash space; pick it if 52 bits is enough for you.
-`fnv-plus` is competitive (and faster on long strings) but ships ~9 KB gzipped for a whole multi-width toolkit rather than one function. This is less relevant if you're bundling or sharing the dependency.
+The `fnv1a-64` core is the fastest 64-bit option on short keys (our main use in Nuxt), and hex formatting costs ~25 ns on top of it.
+`fnv1a52` matches it on short keys and needs no `BigInt` or lane pair, at the cost of 12 bits of hash space; pick it if 52 bits is enough for you.
+On 1 KB inputs the FNV implementations are all within noise of each other.
+`fnv-plus` is competitive but ships ~9 KB gzipped for a whole multi-width toolkit rather than one function. This is less relevant if you're bundling or sharing the dependency.
 `murmurhash` is fastest on long inputs but is 32-bit, so it collides.
 `fnv-lite` and `xxhashjs` pay a large constant cost for their byte-array / `cuint` internals.
 
