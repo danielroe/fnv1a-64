@@ -10,7 +10,7 @@ allowBuilds:
   simple-git-hooks: true
 
 overrides:
-  fnv1a-64: 'link:.'
+  fnv1a-64: 'workspace:*'
 
 minimumReleaseAgeExclude:
   - fnv1a52@1.0.0
