@@ -17,14 +17,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-      - run: corepack enable
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+      - uses: pnpm/setup@703c52620218391530e48b9e8870d5c0082e1b9b # v2.1.0
         with:
-          node-version: lts/*
-          cache: pnpm
-
-      - name: 📦 Install dependencies
-        run: pnpm install
+          cache: true
 
       - name: 🔠 Lint project
         run: pnpm lint
@@ -40,14 +35,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-      - run: corepack enable
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+      - uses: pnpm/setup@703c52620218391530e48b9e8870d5c0082e1b9b # v2.1.0
         with:
-          node-version: lts/*
-          cache: pnpm
-
-      - name: 📦 Install dependencies
-        run: pnpm install
+          cache: true
 
       - name: 🛠 Build project
         run: pnpm build
